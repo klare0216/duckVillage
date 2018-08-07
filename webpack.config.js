@@ -38,11 +38,19 @@ module.exports = {
             loader: "sass-loader"
           }
         ]
+      },
+      {
+        test: /\.(pdf|jpg|gif|png|svg|ico)$/,
+        use: [
+          {
+            loader: 'url-loader'
+          },
+        ]
       }
     ]
   },
   devServer: {
-    contentBase: `${__dirname}/src/js`, 
+    contentBase: `${__dirname}/src/js`,
     filename: 'index_bundle.js',
     inline: true,
     port: 8008,

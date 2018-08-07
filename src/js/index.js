@@ -1,7 +1,10 @@
 import React from 'react';
 import { render } from 'react-dom';
+import '../style/main.sass';
+import App from './component/App/App';
+
 
 render(
-  <div>hi</div>, 
-  document.getElementsByTagName('body')[0]
+  <App />, 
+  document.getElementById('app')
 );
