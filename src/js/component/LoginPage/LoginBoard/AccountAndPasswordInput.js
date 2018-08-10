@@ -1,7 +1,7 @@
 import React from 'react';
 import { InputUi } from '../../Ui/Ui';
 
-export default props => {
+const AccountAndPasswordInput  = props => {
   return (
     <div>
       <InputUi label='帳' type='text'/>
@@ -10,3 +10,5 @@ export default props => {
     </div>
   );
 }
+
+export default AccountAndPasswordInput;

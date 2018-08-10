@@ -4,7 +4,8 @@ const InputUi = props => {
   return (
     <div className="bottom-line-input">
       <label>{ props.label }</label>
-      <input type={ props.type } />
+      <input type={ props.type } 
+        onChange={ event => props.onChange(event) }/>
     </div>
   );
 }

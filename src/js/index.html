@@ -1,9 +1,26 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>鴨村</title>
-  </head>
-  <body>
-    <div id='app'></div>
-  </body>
+
+<head>
+  <meta charset="UTF-8">
+  <title>鴨村</title>
+  <script src="https://www.gstatic.com/firebasejs/5.3.1/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyByVEVWErxTTPW-xBdTCCK3CZ37mRt5iY4",
+      authDomain: "duckvillage-2f27b.firebaseapp.com",
+      databaseURL: "https://duckvillage-2f27b.firebaseio.com",
+      projectId: "duckvillage-2f27b",
+      storageBucket: "",
+      messagingSenderId: "720915526388"
+    };
+    firebase.initializeApp(config);
+  </script>
+</head>
+
+<body>
+  <div id='app'></div>
+</body>
+
 </html>

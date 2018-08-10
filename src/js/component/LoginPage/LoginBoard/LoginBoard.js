@@ -1,7 +1,8 @@
 import React from 'react';
 import AccountAndPasswordInput from './AccountAndPasswordInput';
 import LoginAndSignUpButton from './LoginAndSignUpButton';
-import url from '../../../../../img/duck_house.svg';
+//import url from '../../../../../img/duck_house.svg';
+
 
 class LoginBoard extends React.Component {
   render() {

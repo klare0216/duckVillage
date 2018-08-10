@@ -1,8 +1,10 @@
 import React from 'react';
 import { ButtonUi } from '../../Ui/Ui';
 
-export default props => {
+const SubmitButton = props => {
   return (
     <ButtonUi value='送出' />
   );
 }
+
+export default SubmitButton;
