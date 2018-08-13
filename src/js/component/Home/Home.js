@@ -18,6 +18,16 @@ class Home extends React.Component {
 		}
 	}
 
+	render() {
+		return (
+			<div >
+				<HeadBar date={ this.getFirstAndLastDateOfThisWeek() }/>
+				<WeeklyCheckBoard week={ this.state.week } 
+					onClickCheckBox={ day => this.onClickCheckBox(day)}/>
+			</div>
+		);
+	}
+
 	onClickCheckBox(day) {
 		this.setState( preState => this.getUpdateWeek(preState.week, day));
 	}
@@ -52,15 +62,6 @@ class Home extends React.Component {
 		return (day.getMonth() + 1) + '/' + day.getDate();
 	}
 
-	render() {
-		return (
-			<div >
-				<HeadBar date={ this.getFirstAndLastDateOfThisWeek() }/>
-				<WeeklyCheckBoard week={ this.state.week } 
-					onClickCheckBox={ day => this.onClickCheckBox(day)}/>
-			</div>
-		);
-	}
 }
 
 export default Home;
