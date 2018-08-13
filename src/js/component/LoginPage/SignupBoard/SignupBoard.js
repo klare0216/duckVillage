@@ -1,6 +1,7 @@
 import React from 'react';
 import UserBasicInfoInput from './UserBasicInfoInput';
 import SubmitButton from './SubmitButton';
+import { ButtonUi } from '../../Ui/Ui';
 
 class LoginBoard extends React.Component {
   constructor(props) {
@@ -15,12 +16,13 @@ class LoginBoard extends React.Component {
   render() {
     return (
       <div className='card-content signup'>
+        <ButtonUi value="SignUp" />
         <UserBasicInfoInput onChange={
             { password: password => this.onChangePassword(password), 
               passwordCheck: password => this.onChangePasswordCheck(password), 
               email: email => this.onChangeEmail(email) }
           }/>
-        <SubmitButton onSubmit={ () => this.onSubmitAndSignUp() }/>
+        <SubmitButton onClick={ () => this.onSubmitAndSignUp() }/>
       </div>
     );
   }
@@ -30,8 +32,7 @@ class LoginBoard extends React.Component {
   }
 
   onChangePasswordCheck(password) {
-    if(password != this.state.password)
-      this.setState({ isPasswordCheckDifferent: true});
+    this.setState({ isPasswordCheckDifferent: password != this.state.password});
   }
 
   onChangeEmail(email) {
@@ -39,7 +40,10 @@ class LoginBoard extends React.Component {
   }
 
   onSubmitAndSignUp() {
-    // TODO: call firebase sign up api
+  
+  }
+
+  signIn() {
   }
 
 }

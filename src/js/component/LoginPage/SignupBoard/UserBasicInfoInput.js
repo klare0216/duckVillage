@@ -6,9 +6,9 @@ const UserBasicInfoInput = props => {
     <div>
       <InputUi label='email' type='text' 
         onChange={ event => props.onChange.email(event.target.value)} />
-      <InputUi label='密碼' type='text' 
+      <InputUi label='密碼' type='password' 
         onChange={ event => props.onChange.password(event.target.value) } />
-      <InputUi label='確認密碼' type='text'
+      <InputUi label='確認密碼' type='password'
         onChange={ event => props.onChange.passwordCheck(event.target.value) } />
     </div>
   );

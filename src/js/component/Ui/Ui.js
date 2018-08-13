@@ -2,9 +2,11 @@ import React from 'react';
 
 const InputUi = props => {
   return (
-    <div className="bottom-line-input">
+    <div className={ props.className + " bottom-line-input" }>
       <label>{ props.label }</label>
-      <input type={ props.type } 
+      <input 
+        
+        type={ props.type } 
         onChange={ event => props.onChange(event) }/>
     </div>
   );
@@ -13,7 +15,9 @@ const InputUi = props => {
 const ButtonUi = props => {
   return (
     <div>
-      <button>{ props.value }</button>
+      <button onClick={ (props.onClick) ? (event => props.onClick(event)) : (()=> {}) }>
+        { props.value }
+      </button>
     </div>
   );
 }
