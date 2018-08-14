@@ -1,65 +1,135 @@
 import React from 'react';
 import HeadBar from './HeadBar';
-import WeeklyCheckBoard from './WeeklyCheckBoard';
+import Farm from './Farm';
 
 class Home extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			week: [
-				{ id: 0, isChecked: false },
-				{ id: 1, isChecked: false },
-				{ id: 2, isChecked: false },
-				{ id: 3, isChecked: false },
-				{ id: 4, isChecked: false },
-				{ id: 5, isChecked: false },
-				{ id: 6, isChecked: false },
+			fields: [
+				{ id: 0, display: '-' },
+				{ id: 1, display: '-'},
+				{ id: 2, display: '-'},
+				{ id: 3, display: '-'},
+				{ id: 4, display: '-'},
+				{ id: 5, display: '-'},
+				{ id: 6, display: '-'},
 			],
+			seconds: 0,
+			timer: 0,
+			isTimerStart: false,
+			plantingField: -1,
 		}
+	}
+
+	componentDidUpdate() {
+		if(this.isCountDownJustEnded()) {
+			this.displayMessageOnTheField('做什麼?');
+			this.stopTimer();
+		}
+	}
+
+	isCountDownJustEnded() {
+		return (this.state.isTimerStart && this.state.seconds === 0);	
 	}
 
 	render() {
 		return (
 			<div >
-				<HeadBar date={ this.getFirstAndLastDateOfThisWeek() }/>
-				<WeeklyCheckBoard week={ this.state.week } 
-					onClickCheckBox={ day => this.onClickCheckBox(day)}/>
+				<HeadBar date={ this.getNowDate() }/>
+				<Farm week={ this.state.fields }
+					onClickCheckBox={ id => this.onClickCheckBox(id)}/>
+				<p>現在剩下 { this.getMinutesAndSeconds() }
+					<button onClick={ () => this.onClickToCancelPlanting() }>X</button>
+				</p>
+				<ul>
+					<li><input type='button' value="#tag2" onClick={ event => this.onClickTags(event.target.value) }/></li>
+					<li><input type='button' value="#前端寫code" onClick={ event => this.onClickTags(event.target.value) }/></li>
+					<li><input type='button' value="確定" onClick={ () => this.onClickYes() }/></li>
+				</ul>
 			</div>
 		);
 	}
 
-	onClickCheckBox(day) {
-		this.setState( preState => this.getUpdateWeek(preState.week, day));
+	onClickYes() {
+		if(this.state.timer === 0)
+			this.setState({ plantingField: -1});
 	}
 
-	getUpdateWeek(week, day) {
-		const newWeek = [...week];
-		this.toggleTheDayCheck(newWeek, day);
-		return { week: newWeek }; 
+	onClickTags(tagName) {
+		this.displayMessageOnTheField(tagName);
 	}
 
-	toggleTheDayCheck(week, day) {
-		week[day].isChecked = !week[day].isChecked;
-		return week;
-	}
-
-	getFirstAndLastDateOfThisWeek(){
-		return { monday: this.getMonthAndDateOfThisWeek('monday'), sunday: this.getMonthAndDateOfThisWeek('sunday') }
-	}
-
-	getMonthAndDateOfThisWeek(day) {
+	getNowDate() {
 		const now = new Date(Date.now());
-		const monthAndDate = new Date(1900 + now.getYear(), now.getMonth(), this.getDateOfThisWeek(now, day));
-		return this.getFormattedDateString( monthAndDate );
+		return this.getFormattedDateString(now);
 	}
 
-	getDateOfThisWeek(now, day){
-		const dayToInt = { 'monday': 1, 'sunday': 7 };
-		return now.getDate() - now.getDay() + dayToInt[day];
+	getFormattedDateString(date) {
+		return (date.getMonth() + 1) + '/' + date.getDate();
 	}
 
-	getFormattedDateString(day) {
-		return (day.getMonth() + 1) + '/' + day.getDate();
+	onClickCheckBox(id) {
+		if(this.isAbleToPlant(id)) {
+			this.displayMessageOnTheFieldWithId('種植中', id);
+			this.setState({ plantingField: id});
+			this.startTimer();
+		}
+	}
+
+	isAbleToPlant(id) {
+		return (!this.state.isTimerStart && this.state.fields[id].display === '-');
+	}
+
+	startTimer() {
+		this.setState({ isTimerStart: true, seconds: 5 });
+		const timer = setInterval(() => this.decreaseTime(), 1000);
+		this.setState({ timer: timer});
+	}
+
+	decreaseTime() {
+		this.setState((prevState) => ({ seconds :prevState.seconds - 1 }));
+	}
+
+	getMinutesAndSeconds() {
+		const seconds = this.state.seconds;
+		return Math.floor(seconds / 60) + ':' + (seconds % 60);
+	}
+
+	onClickToCancelPlanting() {
+		if(this.state.plantingField != -1 && this.state.timer !== 0) {
+			this.stopTimer();
+			this.displayMessageOnThField('-');
+			this.setState({ plantingField: -1 });
+		}
+	}
+
+	displayMessageOnTheFieldWithId(message, id) {
+		console.log(id);
+		this.setState( preState => this.getFieldsWithUpdateDisplay(preState.fields, id, message));
+	}
+
+	displayMessageOnTheField(message) {
+		this.setState( preState => this.getFieldsWithUpdateDisplay(preState.fields, preState.plantingField, message));
+	}
+
+	getFieldsWithUpdateDisplay(fields, plantingField, display) {
+		if(plantingField >= 0) {
+			let newFields = [...fields];
+			newFields[plantingField].display = display;
+			return { fields: newFields};
+		}
+	}
+
+	stopTimer() {
+		clearInterval(this.state.timer);
+		this.setState({ isTimerStart: false , timer: 0});
+
+	}
+
+	componentWillUnmount() {
+		if(this.state.timer != 0)
+			clearInterval(this.state.timer);
 	}
 
 }

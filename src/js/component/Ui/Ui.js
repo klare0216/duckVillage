@@ -22,4 +22,12 @@ const ButtonUi = props => {
   );
 }
 
-export { InputUi, ButtonUi };
+const Toolbar = props => {
+	return (
+		<div className='toolbar'>
+			{props.children}
+		</div>
+	);
+}
+
+export { InputUi, ButtonUi, Toolbar };
