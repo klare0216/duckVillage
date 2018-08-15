@@ -35,8 +35,7 @@ class Home extends React.Component {
 	}
 
 	render() {
-
-				return (
+		return (
 			<div >
 				<HeadBar />
 				<Farm week={ this.state.fields }
@@ -50,14 +49,14 @@ class Home extends React.Component {
 	getTimerBoard() {
 		if(this.isTimerStart())
 			return(
-				<TimerBoard time={ this.getMinutesAndSeconds() } 
+				<TimerBoard time={ this.getMinutesAndSeconds() }
 					onClick={ () => this.onClickToCancelPlanting() } />
 			);
 		return '';
 	}
 
 	getTagsBoard() {
-		if(!this.isTimerStart() && this.isPlanting()) 
+		if(!this.isTimerStart() && this.isPlanting())
 			return(
 				<TagsBoard onClickTag={ tag => this.onClickTag(tag) }/>
 			);
