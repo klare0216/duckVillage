@@ -17,7 +17,6 @@ class Home extends React.Component {
 			],
 			seconds: 0,
 			timer: 0,
-			isTimerStart: false,
 			plantingField: -1,
 		}
 	}
@@ -30,21 +29,23 @@ class Home extends React.Component {
 	}
 
 	isCountDownJustEnded() {
-		return (this.state.isTimerStart && this.state.seconds === 0);	
+		return (this.isTimerStart() && this.state.seconds === 0);
 	}
 
 	render() {
 		return (
 			<div >
-				<HeadBar date={ this.getNowDate() }/>
+				<HeadBar />
 				<Farm week={ this.state.fields }
-					onClickCheckBox={ id => this.onClickCheckBox(id)}/>
+					onClickCheckBox={ id => this.onClickField(id)}/>
 				<p>現在剩下 { this.getMinutesAndSeconds() }
 					<button onClick={ () => this.onClickToCancelPlanting() }>X</button>
 				</p>
 				<ul>
 					<li><input type='button' value="#tag2" onClick={ event => this.onClickTags(event.target.value) }/></li>
-					<li><input type='button' value="#前端寫code" onClick={ event => this.onClickTags(event.target.value) }/></li>
+					<li>
+						<input type='button' value="#前端寫code" onClick={ event => this.onClickTags(event.target.value) }/>
+					</li>
 					<li><input type='button' value="確定" onClick={ () => this.onClickYes() }/></li>
 				</ul>
 			</div>
@@ -52,7 +53,7 @@ class Home extends React.Component {
 	}
 
 	onClickYes() {
-		if(this.state.timer === 0)
+		if(!this.isTimerStart)
 			this.setState({ plantingField: -1});
 	}
 
@@ -60,31 +61,29 @@ class Home extends React.Component {
 		this.displayMessageOnTheField(tagName);
 	}
 
-	getNowDate() {
-		const now = new Date(Date.now());
-		return this.getFormattedDateString(now);
-	}
-
-	getFormattedDateString(date) {
-		return (date.getMonth() + 1) + '/' + date.getDate();
-	}
-
-	onClickCheckBox(id) {
+	onClickField(id) {
 		if(this.isAbleToPlant(id)) {
-			this.displayMessageOnTheFieldWithId('種植中', id);
-			this.setState({ plantingField: id});
+			this.plantOnTheField(id);
 			this.startTimer();
 		}
 	}
 
 	isAbleToPlant(id) {
-		return (!this.state.isTimerStart && this.state.fields[id].display === '-');
+		return (!this.isTimerStart() && this.isTheFieldPlanted(id));
+	}
+
+	plantOnTheField(id) {
+		this.displayMessageOnTheFieldWithId('種植中', id);
+		this.setState({ plantingField: id });
+	}
+
+	isTheFieldPlanted(id){
+		return this.state.fields[id].display === '-';
 	}
 
 	startTimer() {
-		this.setState({ isTimerStart: true, seconds: 5 });
 		const timer = setInterval(() => this.decreaseTime(), 1000);
-		this.setState({ timer: timer});
+		this.setState({ timer: timer, seconds: 5});
 	}
 
 	decreaseTime() {
@@ -97,11 +96,15 @@ class Home extends React.Component {
 	}
 
 	onClickToCancelPlanting() {
-		if(this.state.plantingField != -1 && this.state.timer !== 0) {
+		if(this.isPlanting()) {
 			this.stopTimer();
-			this.displayMessageOnThField('-');
-			this.setState({ plantingField: -1 });
+			this.clearThePlantingField();
 		}
+	}
+
+	clearThePlantingField(){
+		this.displayMessageOnTheField('-');
+		this.setState({ plantingField: -1 });
 	}
 
 	displayMessageOnTheFieldWithId(message, id) {
@@ -123,8 +126,16 @@ class Home extends React.Component {
 
 	stopTimer() {
 		clearInterval(this.state.timer);
-		this.setState({ isTimerStart: false , timer: 0});
+		this.setState({ timer: 0, seconds: 0});
 
+	}
+
+	isPlanting() {
+		return this.state.plantingField != -1;
+	}
+
+	isTimerStart() {
+		return (this.state.timer !== 0);
 	}
 
 	componentWillUnmount() {
