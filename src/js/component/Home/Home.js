@@ -1,6 +1,8 @@
 import React from 'react';
 import HeadBar from './HeadBar';
 import Farm from './Farm';
+import TimerBoard from './TimerBoard';
+import TagsBoard from './TagsBoard';
 
 class Home extends React.Component {
 	constructor(props) {
@@ -33,32 +35,38 @@ class Home extends React.Component {
 	}
 
 	render() {
-		return (
+
+				return (
 			<div >
 				<HeadBar />
 				<Farm week={ this.state.fields }
 					onClickCheckBox={ id => this.onClickField(id)}/>
-				<p>現在剩下 { this.getMinutesAndSeconds() }
-					<button onClick={ () => this.onClickToCancelPlanting() }>X</button>
-				</p>
-				<ul>
-					<li><input type='button' value="#tag2" onClick={ event => this.onClickTags(event.target.value) }/></li>
-					<li>
-						<input type='button' value="#前端寫code" onClick={ event => this.onClickTags(event.target.value) }/>
-					</li>
-					<li><input type='button' value="確定" onClick={ () => this.onClickYes() }/></li>
-				</ul>
+				{ this.getTimerBoard() }
+				{ this.getTagsBoard() }
 			</div>
 		);
 	}
 
-	onClickYes() {
-		if(!this.isTimerStart)
-			this.setState({ plantingField: -1});
+	getTimerBoard() {
+		if(this.isTimerStart())
+			return(
+				<TimerBoard time={ this.getMinutesAndSeconds() } 
+					onClick={ () => this.onClickToCancelPlanting() } />
+			);
+		return '';
 	}
 
-	onClickTags(tagName) {
+	getTagsBoard() {
+		if(!this.isTimerStart() && this.isPlanting()) 
+			return(
+				<TagsBoard onClickTag={ tag => this.onClickTag(tag) }/>
+			);
+		return '';
+	}
+
+	onClickTag(tagName) {
 		this.displayMessageOnTheField(tagName);
+		this.setState({ plantingField: -1});
 	}
 
 	onClickField(id) {
@@ -69,7 +77,7 @@ class Home extends React.Component {
 	}
 
 	isAbleToPlant(id) {
-		return (!this.isTimerStart() && this.isTheFieldPlanted(id));
+		return (!this.isTimerStart() && !this.isTheFieldPlanted(id) && !this.isPlanting());
 	}
 
 	plantOnTheField(id) {
@@ -78,7 +86,7 @@ class Home extends React.Component {
 	}
 
 	isTheFieldPlanted(id){
-		return this.state.fields[id].display === '-';
+		return this.state.fields[id].display !== '-';
 	}
 
 	startTimer() {
