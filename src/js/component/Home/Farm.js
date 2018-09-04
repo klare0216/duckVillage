@@ -7,6 +7,8 @@ const Farm = props => {
 			onClick={ () => props.onClickCheckBox(index) }
 			key={ day.id } 
 			display={ day.display }
+			plant={ day.plant }
+			note={ day.note }
 			/> )
 	);
 

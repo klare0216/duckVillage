@@ -3,31 +3,55 @@ import HeadBar from './HeadBar';
 import Farm from './Farm';
 import TimerBoard from './TimerBoard';
 import TagsBoard from './TagsBoard';
+import NoteInputBoard from './NoteInputBoard';
 
 class Home extends React.Component {
+	
 	constructor(props) {
 		super(props);
 		this.state = {
 			fields: [
-				{ id: 0, display: '-' },
-				{ id: 1, display: '-'},
-				{ id: 2, display: '-'},
-				{ id: 3, display: '-'},
-				{ id: 4, display: '-'},
-				{ id: 5, display: '-'},
-				{ id: 6, display: '-'},
+				{ id: 0, display: '-', plant: 'empty', note: ''},
+				{ id: 1, display: '-', plant: 'empty', note: ''},
+				{ id: 2, display: '-', plant: 'empty', note: ''},
+				{ id: 3, display: '-', plant: 'empty', note: ''},
+				{ id: 4, display: '-', plant: 'empty', note: ''},
+				{ id: 5, display: '-', plant: 'empty', note: ''},
+				{ id: 6, display: '-', plant: 'empty', note: ''},
+				{ id: 7, display: '-', plant: 'empty', note: ''},
+			],
+			tags: [
+				{ id: 0, text: '讀書'},
+				{ id: 1, text: '練琴'},
 			],
 			seconds: 0,
 			timer: 0,
 			plantingField: -1,
+			isShowNoteInputBoard: false,
+			isShowTagsBoard: false,
+			doing: '',
 		}
+		this.plants = ['馬鈴薯', '蕃茄', '洋蔥'];
 	}
 
 	componentDidUpdate() {
 		if(this.isCountDownJustEnded()) {
-			this.displayMessageOnTheField('做什麼?');
+			const plant = this.plants[Math.floor((Math.random() * 10) % 3)];
+			this.setField((field, state) => { 
+				field.plant = plant; 
+				field.display = state.doing;});
+			this.setState({isShowNoteInputBoard: true});
 			this.stopTimer();
 		}
+	}
+		
+	setField( settingFunction, id = -1 ) {
+		this.setState( preState => {
+			let newFields = [...preState.fields];
+			const index = (id == -1) ? preState.plantingField : id;
+			settingFunction(newFields[index], preState);
+			return { fields: newFields };
+		});
 	}
 
 	isCountDownJustEnded() {
@@ -42,6 +66,7 @@ class Home extends React.Component {
 					onClickCheckBox={ id => this.onClickField(id)}/>
 				{ this.getTimerBoard() }
 				{ this.getTagsBoard() }
+				{ this.getNoteInputBoard() }
 			</div>
 		);
 	}
@@ -56,22 +81,37 @@ class Home extends React.Component {
 	}
 
 	getTagsBoard() {
-		if(!this.isTimerStart() && this.isPlanting())
+		if(this.state.isShowTagsBoard)
 			return(
-				<TagsBoard onClickTag={ tag => this.onClickTag(tag) }/>
+				<TagsBoard onClickTag={ tag => this.onClickTag(tag) } tags={ this.state.tags }/>
 			);
 		return '';
 	}
 
 	onClickTag(tagName) {
-		this.displayMessageOnTheField(tagName);
-		this.setState({ plantingField: -1});
+		this.setField( field => { field.display += " " + tagName;});
+		this.setState({ doing: tagName, isShowTagsBoard: false });
+		this.startTimer();
 	}
+
+	getNoteInputBoard() {
+		if(this.state.isShowNoteInputBoard)
+			return(
+				<NoteInputBoard onClick={ text => this.onClickEnter(text) }/>
+			);
+		return '';
+	}
+
+	onClickEnter(text) {
+		this.setField( fields => { fields.note = text; } );
+		this.setState({ isShowNoteInputBoard: false , plantingField: -1 });
+	}
+
 
 	onClickField(id) {
 		if(this.isAbleToPlant(id)) {
 			this.plantOnTheField(id);
-			this.startTimer();
+			this.setState({ isShowTagsBoard: true });
 		}
 	}
 
@@ -80,7 +120,9 @@ class Home extends React.Component {
 	}
 
 	plantOnTheField(id) {
-		this.displayMessageOnTheFieldWithId('種植中', id);
+		// this.displayMessageOnTheFieldWithId('種植中', id);
+		this.setField( field => { field.display = '種植中'; console.log('hi')} , id);
+
 		this.setState({ plantingField: id });
 	}
 
@@ -90,7 +132,7 @@ class Home extends React.Component {
 
 	startTimer() {
 		const timer = setInterval(() => this.decreaseTime(), 1000);
-		this.setState({ timer: timer, seconds: 5});
+		this.setState({ timer: timer, seconds: 1});
 	}
 
 	decreaseTime() {
@@ -110,7 +152,7 @@ class Home extends React.Component {
 	}
 
 	clearThePlantingField(){
-		this.displayMessageOnTheField('-');
+		this.setField( field => { field.display = '-';});
 		this.setState({ plantingField: -1 });
 	}
 
@@ -119,22 +161,17 @@ class Home extends React.Component {
 		this.setState( preState => this.getFieldsWithUpdateDisplay(preState.fields, id, message));
 	}
 
-	displayMessageOnTheField(message) {
-		this.setState( preState => this.getFieldsWithUpdateDisplay(preState.fields, preState.plantingField, message));
-	}
-
 	getFieldsWithUpdateDisplay(fields, plantingField, display) {
 		if(plantingField >= 0) {
 			let newFields = [...fields];
 			newFields[plantingField].display = display;
-			return { fields: newFields};
+			return { fields: newFields };
 		}
 	}
 
 	stopTimer() {
 		clearInterval(this.state.timer);
-		this.setState({ timer: 0, seconds: 0});
-
+		this.setState({ timer: 0, seconds: 0 });
 	}
 
 	isPlanting() {

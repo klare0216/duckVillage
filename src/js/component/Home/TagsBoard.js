@@ -1,21 +1,24 @@
 import React from 'react';
+import Tag from './Tag';
 
 const TagsBoard = props => {
+	const render = props.tags.map( tag => {
+		return (
+			<Tag key={ tag.id }
+				text={ tag.text }
+				onClick={ props.onClickTag } />
+		);
+	});
+
 	return(
-		<ul>
-			<li>
-				<input type='button'
-					value="#tag1"
-					onClick={ event => props.onClickTag(event.target.value) }/>
-			</li>
-			<li>
-				<input type='button'
-					value="#tag2"
-					onClick={ event => props.onClickTag(event.target.value) }/>
-			</li>
-		</ul>
+		<div>
+			<p>你接下來要做什麼努力呢？</p>
+			<ul>
+				{ render }
+			</ul>
+		</div>
 	);
-}
+};
 
 export default TagsBoard;
 
