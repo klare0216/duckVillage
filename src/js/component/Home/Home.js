@@ -62,7 +62,7 @@ class Home extends React.Component {
 
 	render() {
 		return (
-			<div >
+			<div>
 				<HeadBar />
 				<Farm week={this.state.fields}
 					onClickCheckBox={id => this.onClickField(id)} />
