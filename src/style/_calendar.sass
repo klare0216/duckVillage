@@ -1,11 +1,15 @@
 .box
-    width: 40px
-    height: 27px
-    background-color: $primary-color
+    width: 30px
+    height: 16px
+    background-color: rgba(240,240,240, 1);
     margin: 0px
     display: inline-block
-    
+    &:hover
+        background-color: rgba(220,220,220, 1);
+        
+
 .box-container
+    height: 16px
     display: flex
     font-size: 14px
     span 
@@ -16,7 +20,10 @@
         color: $mute-color
         width: 30px
         margin-right: 10px
+        position: relative
+        top: -9px
     input
         font-size: 12px
         border: 0px
         border-bottom: $primary-color 1px solid
+        width: 150px

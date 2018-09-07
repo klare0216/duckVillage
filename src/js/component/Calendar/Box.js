@@ -7,10 +7,18 @@ class Box extends React.Component {
 
 	render() {
 		let input = this.props.text;
-		if(this.props.text === "-") input = (<input type='text' autoFocus onBlur={ event => this.props.onBlur(event, this.props.id)} />);
+		let hr = (this.props.time % 2 === 0) ? this.props.time/2+6 : '';
+		if(this.props.isShowInput) {
+			input = (<input type='text' autoFocus 
+						value={ this.props.text }
+						onChange={ event => this.props.onChangeInput(event, this.props.id)} 
+						onBlur={ event => this.props.onBlur(event, this.props.id)} />);
+			 hr = (<strong>{(this.props.time % 2 === 0) ? this.props.time/2+6 : ''}</strong>);
+
+		}
 		return (
 			<div className='box-container'>
-				<span className="hr">{this.props.time}</span>
+				<span className="hr">{hr}</span>
 				<div className='box'
 					style={{ backgroundColor: this.props.color }}
 					onMouseDown={event => this.props.onMouseDown(event, this.props.id)}
